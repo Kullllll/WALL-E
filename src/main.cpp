@@ -23,9 +23,53 @@ const int pwmChannelB = 7;
 
 Servo servo1, servo2, servo3;
 
+void changeAngle(int &pos, int newValue, Servo &servo){
+    if (pos > newValue){
+        for (int i = pos; i>=newValue; i--){
+            servo.write(i);
+            delay(8);
+        }
+    } else if (pos < newValue){
+        for (int i = pos; i<=newValue; i++){
+            servo.write(i);
+            delay(8);
+        }
+    } 
+    pos = newValue;
+}
+
+int joystickX = 0;
+int joystickY = 0;
+int head, rightArm, leftArm;
+int headPos, rightArmPos, leftArmPos;
+
+BLYNK_WRITE(V0){
+    joystickX = param.asInt();
+}
+
+BLYNK_WRITE(V1){
+    joystickY = param.asInt();
+}
+
+BLYNK_WRITE(V3){
+    head = param.asInt();
+}
+
+BLYNK_WRITE(V4){
+    rightArm  = param.asInt();
+}
+
+BLYNK_WRITE(V5){
+    leftArm = param.asInt();
+}
+
+
 void setup(){
     Serial.begin(115200);
     Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+    headPos = 90;
+    rightArmPos = 90;
+    leftArmPos = 90;
 
     servo1.attach(15);
     servo1.write(90);
@@ -46,37 +90,6 @@ void setup(){
     ledcAttachPin(ENA, pwmChannelA);
     ledcAttachPin(ENB, pwmChannelB);
 
-}
-
-int joystickX = 0;
-int joystickY = 0;
-String text;
-int headButton = 0;
-int rightArm = 0;
-int leftArm = 0;
-
-BLYNK_WRITE(V0){
-    joystickX = param.asInt();
-}
-
-BLYNK_WRITE(V1){
-    joystickY = param.asInt();
-}
-
-BLYNK_WRITE(V2){
-    text = param.asStr();
-}
-
-BLYNK_WRITE(V3){
-    headButton = param.asInt();
-}
-
-BLYNK_WRITE(V4){
-    rightArm  = param.asInt();
-}
-
-BLYNK_WRITE(V5){
-    leftArm = param.asInt();
 }
 
 void loop(){
@@ -118,8 +131,8 @@ void loop(){
     ledcWrite(pwmChannelA, speed);
     ledcWrite(pwmChannelB, speed);
 
-    servo1.write(headButton);
-    servo2.write(rightArm);
-    servo3.write(leftArm);
+    changeAngle(headPos, head, servo1);
+    changeAngle(rightArmPos, rightArm, servo2);
+    changeAngle(leftArmPos, leftArm, servo3);
 }
 
