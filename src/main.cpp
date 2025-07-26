@@ -31,7 +31,7 @@ void changeAngle(int &pos, int newValue, Servo &servo){
         }
     } else if (pos < newValue){
         for (int i = pos; i<=newValue; i++){
-            servo.write(180-(i));
+            servo.write(180-abs(i));
             delay(8);
         }
     } 
