@@ -26,12 +26,12 @@ Servo servo1, servo2, servo3;
 void changeAngle(int &pos, int newValue, Servo &servo){
     if (pos > newValue){
         for (int i = pos; i>=newValue; i--){
-            servo.write(180-i);
+            servo.write(180-abs(i));
             delay(8);
         }
     } else if (pos < newValue){
         for (int i = pos; i<=newValue; i++){
-            servo.write(180-i);
+            servo.write(180-(i));
             delay(8);
         }
     } 
