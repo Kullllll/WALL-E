@@ -122,10 +122,10 @@ void loop(){
         digitalWrite(INC, LOW);
         digitalWrite(IND, HIGH);
     } else {
-        digitalWrite(INA, LOW);
-        digitalWrite(INB, LOW);
-        digitalWrite(INC, LOW);
-        digitalWrite(IND, LOW);
+        digitalWrite(INA, HIGH);
+        digitalWrite(INB, HIGH);
+        digitalWrite(INC, HIGH);
+        digitalWrite(IND, HIGH);
         speed = 0;
     }
     ledcWrite(pwmChannelA, speed);
