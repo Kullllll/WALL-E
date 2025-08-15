@@ -21,7 +21,7 @@ char pass[] = "244466666";
 const int pwmChannelA = 6;
 const int pwmChannelB = 7;
 
-Servo servo1, servo2, servo3;
+Servo servo1, servo2, servo3, servo4;
 
 void changeAngle(int &pos, int newValue, Servo &servo){
     if (pos > newValue){
@@ -42,6 +42,7 @@ int joystickX = 0;
 int joystickY = 0;
 int head, rightArm, leftArm;
 int headPos, rightArmPos, leftArmPos;
+int doorOpen, doorClose;
 
 BLYNK_WRITE(V0){
     joystickX = param.asInt();
@@ -63,6 +64,13 @@ BLYNK_WRITE(V5){
     leftArm = param.asInt();
 }
 
+BLYNK_WRITE(V6){
+    doorOpen = param.asInt();
+}
+
+BLYNK_WRITE(V7){
+    doorClose = param.asInt();
+}
 
 void setup(){
     Serial.begin(115200);
@@ -80,6 +88,8 @@ void setup(){
     servo3.attach(17);
     servo3.write(90);
     
+    servo4.attach(4);
+
     pinMode(INA, OUTPUT);
     pinMode(INB, OUTPUT);
     pinMode(INC, OUTPUT);
@@ -134,5 +144,13 @@ void loop(){
     changeAngle(headPos, head, servo1);
     changeAngle(rightArmPos, rightArm, servo2);
     changeAngle(leftArmPos, leftArm, servo3);
+
+    if (doorOpen & !doorClose) {
+        servo4.writeMicroseconds(1000);
+    } else if (doorClose & !doorOpen) {
+        servo4.writeMicroseconds(2000);
+    } else {
+        servo4.writeMicroseconds(1500);
+    }
 }
 
